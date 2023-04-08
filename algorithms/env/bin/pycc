@@ -1,0 +1,3 @@
+#!/Users/lukaszpolowski/Desktop/me/algorithms/env/bin/python
+from numba.pycc import main
+main()

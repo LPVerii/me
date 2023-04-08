@@ -1,0 +1,6 @@
+curl -m 70 -X POST url \
+-H "Authorization: bearer $(gcloud auth print-identity-token)" \
+-H "Content-Type: application/json" \
+-d '{
+    "name":"Hello world"
+}'

@@ -1,0 +1,77 @@
+from google.cloud import bigquery
+from google.cloud import storage
+
+bq = bigquery.Client()
+cs = storage.Client()
+
+# for blob in cs.list_blobs("ambri_csv_to_coherence_us"): 
+#     print(blob.name)
+
+# total=0
+# for table in bq.list_tables("ambri"):
+#     print(table.table_id)
+#     total+=1
+# total
+
+job_config = bigquery.LoadJobConfig()
+job_config.autodetect = True  # Schema autodetection enabled
+job_config.skip_leading_rows = 1  # 1st row == field names
+job_config.source_format = bigquery.SourceFormat.CSV  # data format in GCS
+
+schema_for_anomaly = [
+bigquery.SchemaField("cell_id", "STRING"),
+bigquery.SchemaField("start_ts", "DATETIME"),
+bigquery.SchemaField("end_ts", "DATETIME"),
+bigquery.SchemaField("class", "INTEGER"),
+bigquery.SchemaField("severity", "FLOAT"),
+bigquery.SchemaField("anomaly_id", "STRING"),
+bigquery.SchemaField("cell_last_known_ts", "DATETIME"),
+bigquery.SchemaField("run_id", "INTEGER"),
+]
+
+schema_c = [
+bigquery.SchemaField("cell_id","STRING"),
+bigquery.SchemaField("id","INTEGER"),
+bigquery.SchemaField("run_id","INTEGER"),
+bigquery.SchemaField("ts","DATETIME"),
+bigquery.SchemaField("cycle_index","INTEGER"),
+bigquery.SchemaField("current","FLOAT"),
+bigquery.SchemaField("voltage","FLOAT"),
+bigquery.SchemaField("charge_capacity","FLOAT"),
+bigquery.SchemaField("discharge_capacity","FLOAT"),
+bigquery.SchemaField("charge_energy","FLOAT"),
+bigquery.SchemaField("discharge_energy","FLOAT"),
+bigquery.SchemaField("internal_resistance","FLOAT"),
+bigquery.SchemaField("temperature","FLOAT"),
+bigquery.SchemaField("unadjusted_temperature","FLOAT"),
+bigquery.SchemaField("failure_mode","INTEGER")        
+]
+
+job_config = bigquery.LoadJobConfig(
+schema=schema_for_anomaly,
+source_format=bigquery.SourceFormat.CSV
+)
+job_config.skip_leading_rows = 1
+
+
+for blob in cs.list_blobs("ambri_csv_to_coherence_us"):
+    if blob.name=="anomaly.csv":
+        print(blob.name)
+        job = bq.load_table_from_uri(f"gs://ambri_csv_to_coherence_us/{blob.name}", f"coherence-proto.ambri.{blob.name[:-4]}", job_config=job_config)
+        job.result()
+
+for blob in cs.list_blobs("ambri_dataset"):
+    print(blob.name)
+    job = bq.load_table_from_uri(f"gs://ambri_dataset/{blob.name}", f"coherence-proto.ambri.anomaly", job_config=job_config)
+    job.result()
+
+
+pd.read_csv('gs://ambri_dataset/echem_c4-31609.csv')
+
+for blob in cs.list_blobs("ambri_dataset"):
+    print(blob.name)
+    df = pd.read_csv(f'gs://ambri_dataset/{blob.name}')
+    df = df.drop(df.columns[0],axis=1)
+    df[["start_ts","end_ts","cell_last_known_ts"]] = df[["start_ts","end_ts","cell_last_known_ts"]].applymap(lambda x: datetime.datetime.fromtimestamp(x))
+    job = bq.load_table_from_dataframe(df, f"coherence-proto.ambri.anomaly", job_config=job_config)
+    job.result()

@@ -1,13 +1,16 @@
 {
-	"folders": [		
+	"folders": [
 		{
 			"path": "../algorithms"
 		},
 		{
 			"path": ".."
-		},		
+		},
 		{
 			"path": "."
+		},
+		{
+			"path": "../globals_test"
 		}
 	],
 	"settings": {}
