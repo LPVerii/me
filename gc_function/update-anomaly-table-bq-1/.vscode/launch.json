@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "name": "Deploy Cloud Function",
+      "type": "cloudcode.cloudfunctions",
+      "request": "launch",
+      "functionName": "update_anomaly_table_BQ",
+      "region": "us-central1",
+      "gen": "GEN_1",
+      "revision": "15",
+      "entryPoint": "main",
+      "runtime": "python39",
+      "testInput": ""
+    }
+  ]
+}

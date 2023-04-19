@@ -1,0 +1,11 @@
+# Function dependencies, for example:
+# package>=version
+gcsfs
+fs_gcsfs
+fsspec
+google-cloud
+google-cloud-bigquery  # for google big query libraries
+google-cloud-storage  # for storing objects in buckets (ML Manager)
+google-cloud-bigquery-storage # for read of full BQ tables as part of R startup
+pandas
+pandas_gbq

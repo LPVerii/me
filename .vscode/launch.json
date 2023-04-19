@@ -5,10 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "debug_cloud_func",
+            "name": "Deploy Cloud Function",
+            "type": "cloudcode.cloudfunctions",
+            "request": "launch",
+            "functionName": "update_anomalies",
+            "gen": "GEN_1",
+            "revision": "",
+            "entryPoint": "main",
+            "testInput": "",
+            "region": "us-central1",
+            "runtime": "python39"
+        },
+        {
+            "name": "a",
             "type": "python",
             "request": "launch",
-            "cwd": "/Users/lukaszpolowski/Desktop/me",
+            "cwd": "/Users/lukaszpolowski/Desktop/me/debug_cloud_func/",
             "program": "debug_cloud_function.py",
             "justMyCode": false
         }
